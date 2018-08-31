@@ -1,0 +1,43 @@
+[package]
+name = "pages"
+version = "0.1.0"
+
+[lib]
+name = "pages_lib"
+path = "src/lib.rs"
+
+[dependencies]
+chrono = { version = "*", features = ["serde"] }
+config = { version = "*", default-features = false, features = ["toml"] }
+derive_more = "0.11"
+diesel = { version = "*", features = ["postgres", "extras"] }
+diesel_infer_schema = { version = "*", features = ["postgres"] }
+env_logger = "*"
+failure = "0.1"
+futures = "0.1"
+futures-cpupool = "*"
+geo = { version = "*", features = ["serde"] }
+geo-types = { version = "*", features = ["serde"] }
+hyper = "0.11"
+hyper-tls="0.1"
+log = "*"
+r2d2 = "*"
+r2d2-diesel = "*"
+rand = "*"
+regex = "*"
+serde = "1"
+serde_derive = "*"
+serde_json = "*"
+tokio-core = "*"
+stq_acl = { path = "vendor/libstqbackend/acl" }
+stq_api = { path = "vendor/libstqbackend/api" }
+stq_db = { path = "vendor/libstqbackend/db" }
+stq_http = { path = "vendor/libstqbackend/http" }
+stq_logging = { path = "vendor/libstqbackend/logging" }
+stq_roles = { path = "vendor/libstqbackend/roles" }
+stq_router = { path = "vendor/libstqbackend/router" }
+stq_types = { path = "vendor/libstqbackend/types" }
+stq_static_resources = { path = "vendor/libstqbackend/static_resources" }
+uuid = { version = "*", features = ["serde", "v4"] }
+validator_derive = "*"
+validator = "*"
