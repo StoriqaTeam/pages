@@ -48,8 +48,7 @@ impl<
                                 PageIdentifier::Slug(slug) => repo.find_by_slug(slug),
                             }
                         })
-                })
-                .map_err(|e| e.context("Failed to get page").into()),
+                }).map_err(|e| e.context("Failed to get page").into()),
         )
     }
 
@@ -67,8 +66,7 @@ impl<
                             let repo = repo_factory.create_pages_repo(&*conn);
                             repo.create(new_page)
                         })
-                })
-                .map_err(|e| e.context("Failed to insert page").into()),
+                }).map_err(|e| e.context("Failed to insert page").into()),
         )
     }
 }
