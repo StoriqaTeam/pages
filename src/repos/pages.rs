@@ -1,9 +1,6 @@
 use schema::pages::dsl::*;
 
-use diesel::{
-    self, connection::AnsiTransactionManager, pg::Pg, prelude::*, query_dsl::RunQueryDsl,
-    Connection,
-};
+use diesel::{self, connection::AnsiTransactionManager, pg::Pg, prelude::*, query_dsl::RunQueryDsl, Connection};
 use failure::{self, Fallible};
 use models::page::*;
 use stq_api::pages::*;
@@ -16,9 +13,7 @@ pub trait PagesRepo {
     fn create(&self, item: NewPage) -> Fallible<Page>;
 }
 
-impl<'a, T: Connection<Backend = Pg, TransactionManager = AnsiTransactionManager> + 'static>
-    PagesRepo for DieselRepoImpl<'a, T, ()>
-{
+impl<'a, T: Connection<Backend = Pg, TransactionManager = AnsiTransactionManager> + 'static> PagesRepo for DieselRepoImpl<'a, T, ()> {
     fn find(&self, id_arg: PageId) -> Fallible<Option<Page>> {
         pages
             .find(id_arg)
@@ -40,10 +35,6 @@ impl<'a, T: Connection<Backend = Pg, TransactionManager = AnsiTransactionManager
             .values(&DbNewPage::from(item.clone()))
             .get_result::<DbPage>(self.db_conn)
             .map(From::from)
-            .map_err(|e| {
-                failure::Error::from(e)
-                    .context(format!("Failed to create page {:?}", item))
-                    .into()
-            })
+            .map_err(|e| failure::Error::from(e).context(format!("Failed to create page {:?}", item)).into())
     }
 }
