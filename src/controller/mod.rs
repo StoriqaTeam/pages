@@ -1,5 +1,6 @@
 use errors::*;
 use repos::*;
+use sentry_integration::log_and_capture_error;
 use services::*;
 
 use diesel::{connection::AnsiTransactionManager, pg::Pg, Connection};
@@ -15,6 +16,7 @@ use std::sync::Arc;
 use stq_api::pages::*;
 use stq_http::{
     controller::{Controller, ControllerFuture},
+    errors::ErrorMessageWrapper,
     request_util::{parse_body, serialize_future},
 };
 use stq_types::*;
@@ -56,7 +58,7 @@ impl Controller for ControllerImpl {
 
         let path = req.path().to_string();
 
-        match (req.method().clone(), Route::from_path(&path)) {
+        let fut = match (req.method().clone(), Route::from_path(&path)) {
             (Get, Some(Route::Page { identifier })) => serialize_future(service.get_page(identifier)),
             (Post, Some(Route::Pages)) => serialize_future(
                 parse_body::<NewPage>(req.body())
@@ -70,6 +72,14 @@ impl Controller for ControllerImpl {
                     .context(Error::NotFound)
                     .into(),
             )),
-        }
+        }.map_err(|err| {
+            let wrapper = ErrorMessageWrapper::<Error>::from(&err);
+            if wrapper.inner.code == 500 {
+                log_and_capture_error(&err);
+            }
+            err
+        });
+
+        Box::new(fut)
     }
 }
